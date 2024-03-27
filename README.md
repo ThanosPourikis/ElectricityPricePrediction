@@ -4,16 +4,16 @@
 ### For a live demo [click here](https://thanospourikis.pythonanywhere.com)
 
 ### Data Visualization
-![alt text](https://github.com/ThanosPourikis/Thesis/blob/master/static/index.png)
+![alt text](/static/index.png)
 ### Corrolation
-![alt text](https://github.com/ThanosPourikis/Thesis/blob/master/static/cor.png)
+![alt text](/static/cor.png)
 ### Linear Model
-![alt text](https://github.com/ThanosPourikis/Thesis/blob/master/static/linear.png)
+![alt text](/static/linear.png)
 ### KnnR Model
-![alt text](https://github.com/ThanosPourikis/Thesis/blob/master/static/KnnR.png)
+![alt text](/static/KnnR.png)
 ### Xgboost Model
-![alt text](https://github.com/ThanosPourikis/Thesis/blob/master/static/XgBoost.png)
+![alt text](/static/XgBoost.png)
 ### Lstm Model
-![alt text](https://github.com/ThanosPourikis/Thesis/blob/master/static/lstm.png)
+![alt text](/static/lstm.png)
 ### Hybrid Model
-![alt text](https://github.com/ThanosPourikis/Thesis/blob/master/static/hybrid.png)
+![alt text](/static/hybrid.png)

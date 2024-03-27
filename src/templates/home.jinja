@@ -15,11 +15,11 @@
 				</div>
 			</div>
 		</div>
-		{% if not heatmap == None %}
-			<div class="col-xs-1-12 bg-dark text-primary"">
-				<div class="card bg-dark text-primary"">
-					<div class="card-body bg-dark text-primary"">
-						<h3 class="card-title bg-dark text-primary"">Heatmap of energy production</h3>
+		{% if not heatmap%}
+			<div class="col-xs-1-12 bg-dark text-primary">
+				<div class="card bg-dark text-primary">
+					<div class="card-body bg-dark text-primary">
+						<h3 class="card-title bg-dark text-primary">Heatmap of energy production</h3>
 						<div  id='heatmap'>
 							<script>
 								var graph = {{ heatmap}};

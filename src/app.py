@@ -2,7 +2,6 @@ import pandas as pd
 from flask import render_template, Flask, jsonify, request
 from werkzeug.utils import redirect
 
-from utils.database_interface import DB
 from utils.web_utils import (
     get_dates,
     get_heatmap,
@@ -213,4 +212,4 @@ def metrics_api(dataset, model):
 
 
 if __name__ == "__main__":
-    app.run(host="localhost", port=8000, debug=True)
+    app.run(host="localhost", port=434343, debug=True)

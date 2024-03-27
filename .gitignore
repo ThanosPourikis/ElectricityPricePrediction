@@ -18,3 +18,5 @@ tet.txt
 /metrics
 test.py
 /.idea/
+.env
+/.idea/

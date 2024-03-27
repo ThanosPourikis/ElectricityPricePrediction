@@ -1,2 +1,30 @@
 [tool.black]
 line-length = 79
+
+[tool.poetry]
+name = "electricitypriceprediction"
+version = "0.1.0"
+description = ""
+authors = ["ThanosPourikis <thanos.pourikis@gmail.com>"]
+license = "GNU GPLv3"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+requests = "^2.31.0"
+PyYAML = "^6.0.1"
+SQLAlchemy = "^2.0.25"
+pandas = "^2.2.0"
+scikit-learn = "^1.4.0"
+torch = "^2.2.0"
+xgboost = "^2.0.3"
+openpyxl = "^3.1.2"
+xlrd = "^2.0.1"
+feedparser = "^6.0.11"
+sqlmodel = "^0.0.21"
+beautifulsoup4 = "^4.12.3"
+libsql-experimental = "^0.0.37"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

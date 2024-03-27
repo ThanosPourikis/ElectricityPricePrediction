@@ -1,21 +1,23 @@
+from datetime import datetime
+from pathlib import Path
+
 import pandas as pd
-from utils.database_interface import DB
-from data.get_SMP_data import get_SMP_data
-from data.units_data import get_unit_data
-from data.isp_data import get_isp_data
+
+import configs
 from data.ADMHE_files import get_excel_data
+from data.get_SMP_data import get_SMP_data
 from data.get_weather_data import download_weather_data, get_weather_mean
-import config
+from data.isp_data import get_isp_data
+from data.units_data import get_unit_data
 
 
-def update():
-    db = DB("dataset")
+def update_data(folder_path: Path, curr_date: datetime):
     try:
         start_date = db.get_data('MAX("index")', "requirements").values[0, 0]
         requirements = get_isp_data(
             get_excel_data(
-                folder_path=config.ISP1["folder_path"],
-                filetype=config.ISP1["filetype"],
+                folder_path=configs.ISP1["folder_path"],
+                filetype=configs.ISP1["filetype"],
                 start_date=start_date,
             )
         )
@@ -27,8 +29,8 @@ def update():
         start_date = "2020-11-01"
         requirements = get_isp_data(
             get_excel_data(
-                folder_path=config.ISP1["folder_path"],
-                filetype=config.ISP1["filetype"],
+                folder_path=configs.ISP1["folder_path"],
+                filetype=configs.ISP1["filetype"],
                 start_date=start_date,
             )
         )
@@ -40,8 +42,8 @@ def update():
         start_date = db.get_data('MAX("index")', "units").values[0, 0]
         units = get_unit_data(
             get_excel_data(
-                folder_path=config.UNITS["folder_path"],
-                filetype=config.UNITS["filetype"],
+                folder_path=configs.UNITS["folder_path"],
+                filetype=configs.UNITS["filetype"],
                 start_date=start_date,
             )
         )
@@ -55,8 +57,8 @@ def update():
         start_date = "2020-11-01"
         units = get_unit_data(
             get_excel_data(
-                folder_path=config.UNITS["folder_path"],
-                filetype=config.UNITS["filetype"],
+                folder_path=configs.UNITS["folder_path"],
+                filetype=configs.UNITS["filetype"],
                 start_date=start_date,
             )
         )

@@ -1,6 +1,0 @@
-apt update
-apt install python3.8
-python3  -m venv venv
-source venv/bin/activate
-pip install -r requirements_server.txt
-python server.py

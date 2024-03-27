@@ -1,4 +1,4 @@
-from config import CITIES, DARK_SKY_KEY
+# from configs import CITIES, DARK_SKY_KEY
 import requests
 import json
 from pytz import timezone

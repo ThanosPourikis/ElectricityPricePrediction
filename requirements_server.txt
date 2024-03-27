@@ -1,8 +1,0 @@
-pyyaml
-sqlalchemy
-pandas
-sklearn
-torch
-requests
-xgboost
-openpyxl
