@@ -2,11 +2,12 @@ import datetime
 import logging
 import sys
 from logging.handlers import RotatingFileHandler
+from os import getenv
 
 import pandas as pd
-from data.get_weather_data import get_weather_data
 from dotenv import load_dotenv
-from os import getenv
+
+from data.get_weather_data import get_weather_data
 
 load_dotenv()
 MSE = "MSE"
@@ -15,30 +16,15 @@ HuberLoss = "HuberLoss"
 
 
 def get_req():
-    return (
-        pd.read_csv("datasets/requirements.csv")
-        .set_index("Date")
-        .join(pd.read_csv("datasets/SMP.csv").set_index("Date"))
-        .reset_index()
-    )
+    return pd.read_csv("datasets/requirements.csv").set_index("Date").join(pd.read_csv("datasets/SMP.csv").set_index("Date")).reset_index()
 
 
 def get_data_from_csv():
-    return (
-        pd.read_csv("datasets/requirements.csv")
-        .set_index("Date")
-        .join(pd.read_csv("datasets/units.csv").set_index("Date"))
-        .join(pd.read_csv("datasets/SMP.csv").set_index("Date"))
-        .reset_index()
-    )
+    return pd.read_csv("datasets/requirements.csv").set_index("Date").join(pd.read_csv("datasets/units.csv").set_index("Date")).join(pd.read_csv("datasets/SMP.csv").set_index("Date")).reset_index()
 
 
 def get_data_from_csv_with_weather():
-    return (
-        get_data_from_csv()
-        .set_index("Date")
-        .join(get_weather_data().set_index("Date"))
-    ).reset_index()
+    return (get_data_from_csv().set_index("Date").join(get_weather_data().set_index("Date"))).reset_index()
 
 
 def date_con(date):
@@ -60,16 +46,12 @@ def init_logger():
         def filter(self, record):
             return record.levelno < logging.ERROR
 
-    formatter = logging.Formatter(
-        "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-    )
+    formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
     logger = logging.getLogger()
     logger.setLevel(logging.INFO)
 
     # File handler
-    file_handler = RotatingFileHandler(
-        getenv("LOG_FILE"), maxBytes=5 * 1024 * 1024, backupCount=2
-    )
+    file_handler = RotatingFileHandler(getenv("LOG_FILE"), maxBytes=5 * 1024 * 1024, backupCount=2)
     file_handler.setFormatter(formatter)
     file_handler.setLevel(logging.INFO)
     logger.addHandler(file_handler)

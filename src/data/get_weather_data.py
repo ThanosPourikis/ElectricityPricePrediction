@@ -1,9 +1,10 @@
 # from configs import CITIES, DARK_SKY_KEY
-import requests
 import json
-from pytz import timezone
-from datetime import datetime, timedelta, date
+from datetime import date, datetime, timedelta
+
 import pandas as pd
+import requests
+from pytz import timezone
 
 path = "datasets/weather_data/"
 
@@ -44,9 +45,7 @@ def download_weather_data():
         except Exception as e:
             print(e)
             df = pd.DataFrame(columns=to_keep)
-            time = int(
-                datetime.fromisoformat("2020-11-01 00:00:00").timestamp()
-            )
+            time = int(datetime.fromisoformat("2020-11-01 00:00:00").timestamp())
 
         lat = CITIES[city][0]
         lon = CITIES[city][1]
@@ -58,20 +57,14 @@ def download_weather_data():
             for i in k["hourly"]["data"]:
                 for j in feature_list:
                     to_keep[j] = i[j]
-                to_keep["time"] = localTz.localize(
-                    datetime.fromtimestamp(to_keep["time"])
-                )
+                to_keep["time"] = localTz.localize(datetime.fromtimestamp(to_keep["time"]))
                 df = df.append(to_keep, ignore_index=True)
             time += timedelt
         df.set_index("time").to_csv(f"{path}{city}.csv")
 
 
 def get_weather_data():
-    export = (
-        pd.DataFrame(pd.read_csv(f"{path}/Athens.csv")["time"])
-        .rename(columns={"time": "Date"})
-        .set_index("Date")
-    )
+    export = pd.DataFrame(pd.read_csv(f"{path}/Athens.csv")["time"]).rename(columns={"time": "Date"}).set_index("Date")
 
     for city in CITIES:
         df = pd.read_csv(f"{path}{city}.csv")

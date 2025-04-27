@@ -1,30 +1,49 @@
-[tool.black]
-line-length = 79
-
-[tool.poetry]
+[project]
 name = "electricitypriceprediction"
 version = "0.1.0"
-description = ""
 authors = ["ThanosPourikis <thanos.pourikis@gmail.com>"]
-license = "GNU GPLv3"
 readme = "README.md"
+requires-python = ">=3.12"
 
-[tool.poetry.dependencies]
-python = "^3.11"
-requests = "^2.31.0"
-PyYAML = "^6.0.1"
-SQLAlchemy = "^2.0.25"
-pandas = "^2.2.0"
-scikit-learn = "^1.4.0"
-torch = "^2.2.0"
-xgboost = "^2.0.3"
-openpyxl = "^3.1.2"
-xlrd = "^2.0.1"
-feedparser = "^6.0.11"
-sqlmodel = "^0.0.21"
-beautifulsoup4 = "^4.12.3"
-libsql-experimental = "^0.0.37"
 
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+[tool.ruff]
+target-version = "py312"
+line-length = 200
+
+[tool.ruff.format]
+quote-style = "double"
+
+[tool.ruff.lint]
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "B",  # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "UP",  # pyupgrade
+]
+
+ignore = [
+    "E501",     # line too long
+    "B008",     # do not perform function calls in argument defaults
+#    "C901",    # too complex
+    "B904",     # `except` clause, raise exceptions with `raise ... from err`
+    "E722",     # Do not use bare `except`
+    "B007",     # Loop control variable not used within loop body
+    "W191",     # indentation contains tabs
+]
+
+[tool.ruff.lint.pyupgrade]
+# Preserve types, even if a file imports `from __future__ import annotations`.
+keep-runtime-typing = true
+
+[dependency-groups]
+dev = [
+    "beautifulsoup4>=4.13.4",
+    "pandas>=2.2.3",
+    "pre-commit>=4.3.0",
+    "requests>=2.32.3",
+    "scikit-learn>=1.6.1",
+    "sqlmodel>=0.0.24",
+]

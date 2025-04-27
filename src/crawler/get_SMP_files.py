@@ -31,12 +31,10 @@ def get_smp_files(last_smp_date: datetime, folder_path: Path):
         data = requests.get(url)
         print(data)
         x = re.findall("Αποτελέσματα Aγοράς Επόμενης Ημέρας(.* ?)", data.text)
-        names = re.findall(
-            "[0-9]{8}_EL-DAM_ResultsSummary_EN_v01\\.xlsx", "".join(x)
-        )
+        names = re.findall("[0-9]{8}_EL-DAM_ResultsSummary_EN_v01\\.xlsx", "".join(x))
         urls = re.findall('uuid(.*?)"', "".join(x))
-        for i, j in zip(names, urls[: len(names)]):
-            file_path = folder_path + i
+        for i, j in zip(names, urls[: len(names)], strict=False):
+            file_path = folder_path / i
             if os.path.exists(file_path):
                 print(f"File {file_path} found")
                 flag = True
@@ -49,10 +47,10 @@ def get_smp_files(last_smp_date: datetime, folder_path: Path):
         if not names or flag:
             break
         index += 1
-    files = [f for f in listdir(folder_path)]
+    files = listdir(folder_path)
     for name in files:
         if name.endswith("Copy.xlsx"):
-            os.remove(folder_path + name)
+            os.remove(folder_path / name)
 
 
 # https://www.enexgroup.gr/el/c/document_library/get_file?uuid=08c1813a-100c-42cb-0124-d1f6a7eb3325&groupId=20126

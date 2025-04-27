@@ -22,11 +22,7 @@ def get_json_for_line_scatter(df, y, line=None):
     fig = go.Figure()
     fig.update_layout(template=template)
     for i in y:
-        fig.add_trace(
-            go.Scatter(
-                x=df.index, y=df[i], mode="lines+markers", name=df[i].name
-            )
-        )
+        fig.add_trace(go.Scatter(x=df.index, y=df[i], mode="lines+markers", name=df[i].name))
         if line is not None:
             fig.add_vline(
                 x=line,
@@ -77,12 +73,8 @@ def get_candlesticks(df):
 
 def get_heatmap(df):
     units_24 = df.copy()
-    units_24 = pd.DataFrame(
-        [units_24.iloc[i] for i in range(0, units_24.shape[0], 24)]
-    )
-    units_24.index = [
-        units_24.index[i].date() for i in range(units_24.shape[0])
-    ]
+    units_24 = pd.DataFrame([units_24.iloc[i] for i in range(0, units_24.shape[0], 24)])
+    units_24.index = [units_24.index[i].date() for i in range(units_24.shape[0])]
     units_24.head()
     units_24_trans = units_24.iloc[:, :-1].transpose()
 
@@ -111,8 +103,6 @@ def get_dates(form=""):
     if "start_date" in form:
         start_date = form["start_date"]
     else:
-        start_date = str(
-            localTz.localize(pd.to_datetime(date.today()) - timedelta(weeks=1))
-        )[:10]
+        start_date = str(localTz.localize(pd.to_datetime(date.today()) - timedelta(weeks=1)))[:10]
 
     return start_date, end_date

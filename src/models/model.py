@@ -1,6 +1,8 @@
 import logging
+
 import pandas as pd
 from sklearn.model_selection import train_test_split
+
 from models.utils import get_metrics_df
 
 
@@ -34,9 +36,7 @@ def get_model_results(data, params, name, model, validation_size=0.2):
     train = model.predict(x_train)
     val = model.predict(x_validate)
     pred = model.predict(test.loc[:, test.columns != "SMP"])
-    metrics = get_metrics_df(
-        y_train, train, y_validate, val, test.loc[:, "SMP"], pred
-    )
+    metrics = get_metrics_df(y_train, train, y_validate, val, test.loc[:, "SMP"], pred)
 
     export["Training"] = pd.DataFrame(train, index=x_train.index)
     export["Validation"] = pd.DataFrame(val, index=x_validate.index)

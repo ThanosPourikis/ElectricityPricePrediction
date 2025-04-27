@@ -1,13 +1,13 @@
 import pandas as pd
-from flask import render_template, Flask, jsonify, request
+from flask import Flask, jsonify, render_template, request
 from werkzeug.utils import redirect
 
 from utils.web_utils import (
+    get_candlesticks,
     get_dates,
     get_heatmap,
-    get_json_for_line_fig,
-    get_candlesticks,
     get_json_for_fig_scatter,
+    get_json_for_line_fig,
     get_json_for_line_scatter,
     get_table,
 )
@@ -52,14 +52,10 @@ def api_redict():
 def index(dataset):
     db = DB(datasets_dict[dataset])
     start_date, end_date = get_dates(request.args)
-    df = db.get_data(
-        "*", dataset, f'"index" < "{end_date}"and "index" > "{start_date}"'
-    )
+    df = db.get_data("*", dataset, f'"index" < "{end_date}"and "index" > "{start_date}"')
 
     if "units" in dataset:
-        heatmap = get_heatmap(
-            df.iloc[:, 7 : -7 if "cloudCover" in df.columns else -1]
-        )
+        heatmap = get_heatmap(df.iloc[:, 7 : -7 if "cloudCover" in df.columns else -1])
         df = df.drop(
             axis=1,
             columns=df.iloc[:, 6 : -7 if "cloudCover" in df.columns else -1],
@@ -84,9 +80,7 @@ def index(dataset):
 def corrolations(dataset):
     db = DB(datasets_dict[dataset])
     start_date, end_date = get_dates(request.args)
-    df = db.get_data(
-        "*", dataset, f'"index" <= "{end_date}"and "index" >= "{start_date}"'
-    )
+    df = db.get_data("*", dataset, f'"index" <= "{end_date}"and "index" >= "{start_date}"')
     if "units" in dataset:
         df = df.drop(
             axis=1,
@@ -110,9 +104,7 @@ def page_for_ml_model(dataset, name):
     start_date, end_date = get_dates(request.args)
 
     db = DB(datasets_dict[dataset])
-    df = db.get_data(
-        "*", name, f'"index" <= "{end_date}" and "index" >= "{start_date}"'
-    )
+    df = db.get_data("*", name, f'"index" <= "{end_date}" and "index" >= "{start_date}"')
     df["Previous Prediction"] = db.get_data(
         f'"index","{name}"',
         "infernce",
@@ -127,9 +119,7 @@ def page_for_ml_model(dataset, name):
             title=f"Model: {name}, Dataset: {dataset},  Last 7days Prediction vs Actual Price And Inference",
             chart_json=get_json_for_line_scatter(df, df.columns),
             table=get_table(metrics),
-            hist_json=get_json_for_line_scatter(
-                hist, hist.columns, metrics.iloc[0]["best_epoch"]
-            ),
+            hist_json=get_json_for_line_scatter(hist, hist.columns, metrics.iloc[0]["best_epoch"]),
             dataset=dataset,
             start_date=start_date,
             end_date=end_date,
@@ -198,11 +188,7 @@ def metrics_api(dataset, model):
         if model == "all":
             dict = {}
             for model in models:
-                dict[model] = (
-                    db.get_metrics(model)
-                    .loc[:, ["Train", "Validation", "Test"]]
-                    .to_dict()
-                )
+                dict[model] = db.get_metrics(model).loc[:, ["Train", "Validation", "Test"]].to_dict()
             return jsonify(dict)
         else:
             return jsonify(db.get_metrics(model).to_dict())

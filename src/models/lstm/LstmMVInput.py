@@ -1,19 +1,18 @@
+import copy
 import logging
 import time
 
 import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import MinMaxScaler
+from torch import Tensor
 from torch.nn import L1Loss
 from torch.optim import Adam
-from torch import Tensor
-
-from sklearn.preprocessing import MinMaxScaler
-import pandas as pd
-import copy
-
-from models.utils import get_metrics_df
 from torch.utils.data import DataLoader
+
 from models.lstm.utils import RequirementsSample, sliding_windows
-from sklearn.model_selection import train_test_split
+from models.utils import get_metrics_df
 
 
 class LstmMVInput:
@@ -91,12 +90,8 @@ class LstmMVInput:
         labels_t_s = MinMaxScaler(feature_range=(-1, 1))
         labels_v_s = MinMaxScaler(feature_range=(-1, 1))
 
-        x_train = feature_t_s.fit_transform(
-            x_train.reshape(-1, x_train.shape[-1])
-        ).reshape(x_train.shape)
-        x_validate = feature_v_s.fit_transform(
-            x_validate.reshape(-1, x_validate.shape[-1])
-        ).reshape(x_validate.shape)
+        x_train = feature_t_s.fit_transform(x_train.reshape(-1, x_train.shape[-1])).reshape(x_train.shape)
+        x_validate = feature_v_s.fit_transform(x_validate.reshape(-1, x_validate.shape[-1])).reshape(x_validate.shape)
 
         y_train = labels_t_s.fit_transform(y_train.squeeze())
         y_validate = labels_v_s.fit_transform(y_validate.squeeze())
@@ -133,24 +128,18 @@ class LstmMVInput:
             err = []
             for j, k in train_data_loader:
                 y_train_pred = model(j.float())
-                loss = self.criterion(
-                    y_train_pred.squeeze(), k.squeeze().float()
-                )
+                loss = self.criterion(y_train_pred.squeeze(), k.squeeze().float())
                 err.append(loss.detach().item())
                 optimiser.zero_grad()
                 loss.backward()
                 optimiser.step()
-            self.error_train = np.append(
-                self.error_train, (sum(err) / len(err))
-            )
+            self.error_train = np.append(self.error_train, (sum(err) / len(err)))
 
             model.eval()
             err = []
             for j, k in val_data_loader:
                 y_val_pred = model(j.float())
-                loss = self.criterion(
-                    y_val_pred.squeeze(), k.squeeze().float()
-                )
+                loss = self.criterion(y_val_pred.squeeze(), k.squeeze().float())
                 err.append(loss.detach().item())
             self.error_val = np.append(self.error_val, (sum(err) / len(err)))
 
@@ -161,15 +150,11 @@ class LstmMVInput:
             if self.error_val[-1] <= self.error_val.min():
                 self.model = copy.deepcopy(model)
 
-            if (
-                self.error_val.shape[0] - self.error_val.argmin()
-            ) > self.num_epochs:
+            if (self.error_val.shape[0] - self.error_val.argmin()) > self.num_epochs:
                 break
 
         self.best_epoch = self.error_val.argmin()
-        logging.info(
-            f"{self.name} Training Completed Best_epoch : {self.best_epoch} Training Time {time.time() - start_time:.4f}"
-        )
+        logging.info(f"{self.name} Training Completed Best_epoch : {self.best_epoch} Training Time {time.time() - start_time:.4f}")
 
         self.hist = pd.DataFrame()
         self.hist["Traing Error"] = self.error_train.tolist()
@@ -186,21 +171,13 @@ class LstmMVInput:
         train = self.model(x_train)
         train = train.detach().numpy().reshape(-1, 1)
         train = scaler_l.inverse_transform(train)
-        self.export = self.export.join(
-            pd.DataFrame(train, index=self.y_train.index, columns=["Training"])
-        )
+        self.export = self.export.join(pd.DataFrame(train, index=self.y_train.index, columns=["Training"]))
 
         x_validate = scaler_f.transform(np.array(self.x_validate))
-        x_validate = Tensor(
-            x_validate.reshape(1, -1, self.x_validate.shape[1])
-        )
+        x_validate = Tensor(x_validate.reshape(1, -1, self.x_validate.shape[1]))
         val = self.model(x_validate)
         val = scaler_l.inverse_transform(val.detach().numpy().reshape(-1, 1))
-        self.export = self.export.join(
-            pd.DataFrame(
-                val, index=self.y_validate.index, columns=["Validation"]
-            )
-        )
+        self.export = self.export.join(pd.DataFrame(val, index=self.y_validate.index, columns=["Validation"]))
 
         x_test, y_test = (
             self.test.loc[:, self.test.columns != "SMP"],
@@ -210,24 +187,16 @@ class LstmMVInput:
         x_test = Tensor(x_test.reshape(1, -1, x_test.shape[1]))
         test = self.model(x_test)
         test = scaler_l.inverse_transform(test.detach().numpy().reshape(-1, 1))
-        self.export = self.export.join(
-            pd.DataFrame(test, index=y_test.index, columns=["Testing"])
-        )
+        self.export = self.export.join(pd.DataFrame(test, index=y_test.index, columns=["Testing"]))
 
-        metrics = get_metrics_df(
-            self.y_train, train, self.y_validate, val, y_test, test
-        )
+        metrics = get_metrics_df(self.y_train, train, self.y_validate, val, y_test, test)
 
         try:
             inference = self.inference.loc[:, self.inference.columns != "SMP"]
             inference = scaler_f.transform(np.array(inference))
             inference = Tensor(inference.reshape(1, -1, inference.shape[1]))
             inference = self.model(inference)
-            inference = scaler_l.inverse_transform(
-                inference.detach().numpy().reshape(-1, 1)
-            )
-            self.export["Inference"] = pd.DataFrame(
-                inference, index=self.inference.index
-            )
+            inference = scaler_l.inverse_transform(inference.detach().numpy().reshape(-1, 1))
+            self.export["Inference"] = pd.DataFrame(inference, index=self.inference.index)
         finally:
             return self.export, metrics, self.hist, self.best_epoch

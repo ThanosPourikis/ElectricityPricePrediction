@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+
 import pandas as pd
 from pytz import timezone
 
@@ -10,31 +11,21 @@ def get_isp_data(df):
     for i in df:
         temp = pd.DataFrame()
 
-        date = datetime.fromisoformat(
-            f"{i[0:4]}-{i[4:6]}-{i[6:8]}"
-        ) + timedelta(hours=1)
+        date = datetime.fromisoformat(f"{i[0:4]}-{i[4:6]}-{i[6:8]}") + timedelta(hours=1)
         date = [date + timedelta(hours=i) for i in range(24)]
         date = [localTz.localize(x) for x in date]
         # del date[3]
 
-        res = df[i].iloc[
-            df[i][df[i].iloc[:, 0] == "Non-Dispatchable RES"].index[0] + 1
-        ][2:-1]
+        res = df[i].iloc[df[i][df[i].iloc[:, 0] == "Non-Dispatchable RES"].index[0] + 1][2:-1]
         temp["Renewables"] = res
 
-        nndis = df[i].iloc[
-            df[i][df[i].iloc[:, 0] == "Non-Dispatcheble Losses"].index[0] + 1
-        ]
+        nndis = df[i].iloc[df[i][df[i].iloc[:, 0] == "Non-Dispatcheble Losses"].index[0] + 1]
         temp["Non-Dispatcheble"] = nndis
 
-        man_hydro = df[i].iloc[
-            df[i][df[i].iloc[:, 0] == "Commissioning"].index[0] - 1
-        ]
+        man_hydro = df[i].iloc[df[i][df[i].iloc[:, 0] == "Commissioning"].index[0] - 1]
         temp["Man_Hydro"] = man_hydro
 
-        comm = df[i].iloc[
-            df[i][df[i].iloc[:, 0] == "Commissioning"].index[0] + 1
-        ]
+        comm = df[i].iloc[df[i][df[i].iloc[:, 0] == "Commissioning"].index[0] + 1]
         temp["Commissioning"] = comm
 
         req_start = df[i][df[i].iloc[:, 0] == "Up"].index[0]
@@ -49,9 +40,7 @@ def get_isp_data(df):
 
         pairs = []
         for j in range(0, len(temp), 2):
-            pairs.append(
-                temp.iloc[j : j + 2].mean(axis=0)
-            )  # Example (00:00:00 + 00:30:00)/2 -> 00:00:00
+            pairs.append(temp.iloc[j : j + 2].mean(axis=0))  # Example (00:00:00 + 00:30:00)/2 -> 00:00:00
         pairs = pd.DataFrame(pairs)
 
         # if len(pairs) == 23:

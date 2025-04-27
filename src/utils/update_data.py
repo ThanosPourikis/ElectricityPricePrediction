@@ -21,9 +21,7 @@ def update_data(folder_path: Path, curr_date: datetime):
                 start_date=start_date,
             )
         )
-        requirements = pd.concat(
-            [db.get_data("*", "requirements"), requirements]
-        )
+        requirements = pd.concat([db.get_data("*", "requirements"), requirements])
     except Exception as e:
         print(e)
         start_date = "2020-11-01"
@@ -48,9 +46,7 @@ def update_data(folder_path: Path, curr_date: datetime):
             )
         )
         if not units.empty:
-            units = pd.concat(
-                [db.get_data("*", "units")[units.columns], units]
-            ).fillna(0)
+            units = pd.concat([db.get_data("*", "units")[units.columns], units]).fillna(0)
         else:
             units = db.get_data("*", "units")
     except Exception:

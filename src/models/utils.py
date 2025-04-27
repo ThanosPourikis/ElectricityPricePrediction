@@ -1,11 +1,12 @@
+from datetime import date
+
+import pandas as pd
 from numpy import sqrt
-from sklearn.metrics._regression import (
-    mean_squared_error,
+from sklearn.metrics import (
     mean_absolute_error,
+    mean_squared_error,
     r2_score,
 )
-import pandas as pd
-from datetime import date
 
 today = pd.to_datetime(date.today())  # + timedelta(days= 1)
 
@@ -14,9 +15,7 @@ def rmse(y_train, y_train_pred):
     return sqrt(mean_squared_error(y_train, y_train_pred))
 
 
-def get_metrics_df(
-    y_train, y_train_pred, y_val, y_val_pred, y_test, y_test_pred
-):
+def get_metrics_df(y_train, y_train_pred, y_val, y_val_pred, y_test, y_test_pred):
     metrics = pd.DataFrame()
     metrics = metrics.append(
         pd.DataFrame(

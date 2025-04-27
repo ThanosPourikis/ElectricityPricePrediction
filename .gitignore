@@ -10,7 +10,6 @@ __pycache__/
 export.csv
 test.csv
 smp_files
-config.py
 test.json
 units/
 *\.log
