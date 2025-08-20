@@ -94,7 +94,7 @@ def get_table(df):
     return df
 
 
-def get_dates(form=""):
+def get_dates(form: dict):
     if "end_date" in form:
         end_date = form["end_date"]
     else:
