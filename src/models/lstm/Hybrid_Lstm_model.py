@@ -1,5 +1,5 @@
+from torch.nn import LSTM, Conv1d, Linear, Module, Tanh
 from torch.nn.modules.dropout import Dropout
-from torch.nn import BatchNorm1d, LSTM, Linear, Tanh, Module, Conv1d
 
 
 class Hybrid_LSTM(Module):
@@ -12,7 +12,7 @@ class Hybrid_LSTM(Module):
         drop=0.1,
         batch_first=True,
     ):
-        super(Hybrid_LSTM, self).__init__()
+        super().__init__()
         self.conv1 = Conv1d(24, 24, 2)
         self.lstm = LSTM(1, hidden_size, num_layers, batch_first)
         self.drop = Dropout(drop)

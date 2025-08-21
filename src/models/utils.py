@@ -16,39 +16,36 @@ def rmse(y_train, y_train_pred):
 
 
 def get_metrics_df(y_train, y_train_pred, y_val, y_val_pred, y_test, y_test_pred):
-    metrics = pd.DataFrame()
-    metrics = metrics.append(
-        pd.DataFrame(
-            {
-                "Train": mean_absolute_error(y_train, y_train_pred),
-                "Validation": mean_absolute_error(y_val, y_val_pred),
-                "Test": mean_absolute_error(y_test, y_test_pred),
-            },
-            index=["MAE"],
-        )
+    """Calculate and return metrics DataFrame using modern pandas concat."""
+
+    mae_metrics = pd.DataFrame(
+        {
+            "Train": mean_absolute_error(y_train, y_train_pred),
+            "Validation": mean_absolute_error(y_val, y_val_pred),
+            "Test": mean_absolute_error(y_test, y_test_pred),
+        },
+        index=["MAE"],
     )
 
-    metrics = metrics.append(
-        pd.DataFrame(
-            {
-                "Train": rmse(y_train, y_train_pred),
-                "Validation": rmse(y_val, y_val_pred),
-                "Test": rmse(y_test, y_test_pred),
-            },
-            index=["RMSE"],
-        )
+    rmse_metrics = pd.DataFrame(
+        {
+            "Train": rmse(y_train, y_train_pred),
+            "Validation": rmse(y_val, y_val_pred),
+            "Test": rmse(y_test, y_test_pred),
+        },
+        index=["RMSE"],
     )
 
-    metrics = metrics.append(
-        pd.DataFrame(
-            {
-                "Train": r2_score(y_train, y_train_pred),
-                "Validation": r2_score(y_val, y_val_pred),
-                "Test": r2_score(y_test, y_test_pred),
-            },
-            index=["R2"],
-        )
+    r2_metrics = pd.DataFrame(
+        {
+            "Train": r2_score(y_train, y_train_pred),
+            "Validation": r2_score(y_val, y_val_pred),
+            "Test": r2_score(y_test, y_test_pred),
+        },
+        index=["R2"],
     )
+
+    metrics = pd.concat([mae_metrics, rmse_metrics, r2_metrics], axis=0)
 
     # We have values =0 So we cant use MAPE
     # scaler = Normalizer()

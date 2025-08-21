@@ -1,8 +1,8 @@
-from datetime import datetime, timedelta
-import requests
 import os
-import pandas as pd
+from datetime import datetime, timedelta
 
+import pandas as pd
+import requests
 
 dt = datetime.now() + timedelta(days=1)
 

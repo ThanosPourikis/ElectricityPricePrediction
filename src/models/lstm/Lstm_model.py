@@ -1,4 +1,4 @@
-from torch import nn, zeros
+from torch import nn
 from torch.nn.modules.dropout import Dropout
 
 
@@ -12,7 +12,7 @@ class LSTM(nn.Module):
         drop=0.1,
         batch_first=True,
     ):
-        super(LSTM, self).__init__()
+        super().__init__()
         # self.norm = nn.BatchNorm1d(24)
         self.lstm = nn.LSTM(input_size, hidden_size, num_layers, batch_first)
         self.drop = Dropout(drop)

@@ -4,6 +4,9 @@ version = "0.1.0"
 authors = ["ThanosPourikis <thanos.pourikis@gmail.com>"]
 readme = "README.md"
 requires-python = ">=3.12"
+dependencies = [
+    "ruff>=0.12.9",
+]
 
 
 [tool.ruff]
